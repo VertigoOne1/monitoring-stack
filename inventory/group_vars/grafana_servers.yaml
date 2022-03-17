@@ -1,0 +1,10 @@
+---
+grafana_security:
+  admin_user: admin
+  admin_password: initial
+grafana_datasources:
+  - name: prometheus
+    type: prometheus
+    access: proxy
+    url: 'http://192.168.101.130:9090'
+    basicAuth: false
