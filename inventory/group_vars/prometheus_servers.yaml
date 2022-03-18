@@ -5,31 +5,90 @@ prometheus_targets: []
 prometheus_scrape_configs:
 - job_name: 'test-cluster'
   scrape_interval: 15s
+  scrape_timeout: 14s
   honor_labels: true
   metrics_path: '/federate'
   params:
     'match[]':
+      - '{__name__=~".+"}'
+      - '{__name__=~"^job:.*"}'
+      - '{job="prometheus"}'
+      - '{job="node"}'
+      - '{__name__="server_labels"}'
+      - '{job="kubernetes-nodes-cadvisor"}'
+      - '{job="kubernetes-services"}'
+      - '{job="kubernetes-service-endpoints"}'
+      - '{job="kubernetes-pods-slow"}'
       - '{job="kubernetes-pods"}'
-      - '{job="kubernetes-service-endpoints"}'
-      - '{job="kubernetes-nodes"}'
       - '{job="kubernetes-apiservers"}'
-      - '{job="kubernetes-service-endpoints"}'
+      - '{job="kubernetes-service-endpoints-slow"}'
+      - '{job="cadvisor"}'
+      - '{job="container"}'
+      - '{job="kube"}'
+      - '{job="kubelet"}'
+      - '{job="kubernetes"}'
+      - '{__name__=~"job.*"}'
   static_configs:
     - targets:
       - '192.168.101.201:80'
-- job_name: 'test-mongodb'
+- job_name: 'MongoDB'
   scrape_interval: 15s
+  scrape_timeout: 14s
   honor_labels: true
   metrics_path: '/metrics'
   # params: []
   static_configs:
     - targets:
-      - 'mongodb:9100'
-- job_name: 'test-rabbitmq'
+      - '192.168.101.121:9216'
+- job_name: 'RabbitMQ'
   scrape_interval: 15s
+  scrape_timeout: 14s
   honor_labels: true
   metrics_path: '/metrics'
   # params: []
   static_configs:
     - targets:
-      - 'rabbitmq:9100'
+      - '192.168.101.110:15692'
+
+## From Deowald
+# - job_name: 'federate'
+# scrape_interval: 60s
+# scrape_timeout: 59s
+#  honor_labels: true
+# metrics_path: '/federate'
+# params:
+# 'match[]':
+# - '{__name__=~".+"}'
+# - '{__name__=~"^job:.*"}'
+# - '{job="prometheus"}'
+# - '{job="node"}'
+# - '{__name__="server_labels"}'
+# - '{job="kubernetes-nodes-cadvisor"}'
+# - '{job="kubernetes-services"}'
+# - '{job="kubernetes-service-endpoints"}'
+# - '{job="kubernetes-pods-slow"}'
+# - '{job="kubernetes-pods"}'
+# - '{job="kubernetes-apiservers"}'
+# - '{job="kubernetes-service-endpoints-slow"}'
+# - '{job="cadvisor"}'
+# - '{job="container"}'
+# - '{job="kube"}'
+# - '{job="kubelet"}'
+# - '{job="kubernetes"}'
+# - '{__name__=~"job.*"}'
+# relabel_configs:
+# - source_labels:
+# - 'kubernetes_node'
+# target_label: nodename
+# - source_labels:
+# - 'kubernetes_node'
+# action: replace
+# target_label: instance
+# regex: (.+)
+# replacement: ${1}:9100
+#  static_configs:
+# - targets:
+# - 'a4e7d803aa2454d8ebe95b2c5beb7daf-6cc982ea41cb243f.elb.eu-central-1.amazonaws.com'
+# labels:
+# clusterID: core-prod-eks
+cluster: core-prod-eks

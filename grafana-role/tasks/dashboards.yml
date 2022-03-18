@@ -118,6 +118,8 @@
              orgId: 1
              folder: ''
              type: file
+             allowUiUpdates: {{ provisioned_dashboards_allow_ui_updates }}
+             disableDeletion: {{ provisioned_dashboards_disable_deletion }}
              options:
                path: "{{ grafana_data_dir }}/dashboards"
         backup: false
@@ -159,3 +161,24 @@
         state: absent
       with_items: "{{ _dashboards_present_list | difference( _dashboards_copied_list ) }}"
       when: grafana_provisioning_synced
+
+    - name: Get all the dashboards to be provisioned
+      find:
+        paths: "{{ grafana_data_dir }}/dashboards"
+      register: provisioned_dashboards
+
+    - debug:
+        var: item.path
+      with_items: "{{ provisioned_dashboards.files }}"
+
+    - name: Set the correct data source name in the dashboard to be provisioned
+      replace:
+        dest: "{{ item.path }}"
+        regexp: '"(?:\${)?DS_[A-Z0-9_-]+(?:})?"'
+        replace: '"prometheus"'
+      with_items:
+        - "{{ provisioned_dashboards.files | default([])}}"
+      become: true
+      notify:
+        - "provisioned dashboards changed"
+        - "restart grafana"

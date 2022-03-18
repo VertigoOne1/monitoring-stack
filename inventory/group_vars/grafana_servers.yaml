@@ -8,3 +8,10 @@ grafana_datasources:
     access: proxy
     url: 'http://192.168.101.130:9090'
     basicAuth: false
+grafana_plugins:
+  - grafana-polystat-panel
+  - btplc-status-dot-panel
+grafana_dashboards_dir: dashboards
+grafana_use_provisioning: True
+provisioned_dashboards_allow_ui_updates: True
+provisioned_dashboards_disable_deletion: False
