@@ -1,0 +1,69 @@
+---
+# Configure Kibana
+
+# Create required directories
+- name: Create Directories
+  notify: reload systemd configuration
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    recurse: yes
+  loop:
+    - "{{ log_dir }}"
+    - "{{ conf_dir }}"
+
+- name: Create Data Directories
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    recurse: yes
+  loop:
+    - "{{ data_dirs }}"
+
+# Copy the config template
+- name: Copy Configuration File
+  become: yes
+  template:
+    src: kibana.yml.j2
+    dest: "{{ conf_dir }}/kibana.yml"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    mode: 0644
+    force: yes
+  register: system_change
+  notify: restart kibana
+
+# Copy the instance specific default file
+- name: Copy Default File for Instance
+  become: yes
+  template: src=kibana.j2 dest={{ instance_default_file }} mode=0644 force=yes
+  notify: restart kibana
+
+# Copy the instance specific init file
+- name: Copy Debian Init File for Instance
+  become: yes
+  template: src=init/debian/kibana.j2 dest={{ instance_init_script }} mode=0755 force=yes
+  when: ansible_os_family == 'Debian' and not use_system_d
+  notify: restart kibana
+
+# Copy the instance specific init file
+- name: Copy Redhat Init File for Instance
+  become: yes
+  template: src=init/redhat/kibana.j2 dest={{ instance_init_script }} mode=0755 force=yes
+  when: ansible_os_family == 'RedHat' and not use_system_d
+  notify: restart kibana
+
+# Copy the systemd specific file if systemd is installed
+- name: Copy Systemd File for Instance
+  become: yes
+  template: src=systemd/kibana.j2 dest={{ instance_sysd_script }} mode=0644 force=yes
+  when: use_system_d | bool
+  notify:
+    - reload systemd configuration
+    - restart kibana

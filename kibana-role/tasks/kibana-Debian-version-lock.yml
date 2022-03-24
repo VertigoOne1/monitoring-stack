@@ -1,0 +1,7 @@
+---
+- name: Debian - hold kibana version
+  become: yes
+  dpkg_selections:
+    name: "{{ kibana_package_name }}"
+    selection: hold
+...

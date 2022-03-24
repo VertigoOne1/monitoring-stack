@@ -1,0 +1,29 @@
+---
+- name: reload systemd configuration
+  become: yes
+  systemd:
+    daemon_reload: yes
+
+# Restart service and ensure it is enabled
+- name: restart kibana
+  listen: restart kibana
+  become: yes
+  service:
+    name: "{{ instance_init_script | basename }}"
+    state: restarted
+    enabled: yes
+  when:
+    - kibana_restart_on_change | bool
+    - kibana_start_service | bool
+
+# wait that kibana is up
+- name: Wait for kibana to startup
+  listen: restart kibana
+  wait_for:
+    host: "{{ kibana_api_host }}"
+    port: "{{ kibana_api_port }}"
+    delay: 5
+    connect_timeout: 1
+  when:
+    - kibana_restart_on_change | bool
+    - kibana_start_service | bool

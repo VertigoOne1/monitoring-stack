@@ -1,0 +1,7 @@
+kibana_config:
+  server.name: "{{ inventory_hostname }}"
+  server.port: 5600
+  server.host: "0.0.0.0"
+  elasticsearch.hosts: "http://192.168.101.150:9200"
+  logging.verbose: true
+  # for prod - server.publicBaseUrl: <url>

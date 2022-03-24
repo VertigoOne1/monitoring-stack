@@ -1,0 +1,12 @@
+.kitchen/
+venv/
+license*.json
+*.pyc
+.vendor
+.bundle
+Converging
+TODO
+.idea/
+.vscode/
+elasticsearch.iml
+!/vars/RedHat.yml

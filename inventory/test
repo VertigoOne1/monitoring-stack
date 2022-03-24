@@ -7,3 +7,14 @@
 192.168.101.140 hostname=grafana.marnusnet.local
 
 [grafana_servers:vars]
+
+[elasticsearch_servers]
+192.168.101.150 hostname=elasticsearch.marnusnet.local
+
+[elasticsearch_servers:vars]
+
+[kibana_servers]
+192.168.101.150 hostname=elasticsearch.marnusnet.local
+
+[kibana_servers:vars]
+

@@ -1,0 +1,38 @@
+---
+- name: os-specific vars
+  include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - always
+
+- name: set compatibility variables
+  include: compatibility-variables.yml
+  tags:
+    - always
+
+- name: check-set-parameters
+  include: kibana-parameters.yml
+  tags:
+    - always
+
+- name: include kibana.yml
+  include: kibana.yml
+  tags:
+    - install
+
+- name: include kibana-config.yml
+  include: kibana-config.yml
+  tags:
+    - config
+
+- name: include kibana-ssl.yml
+  include: kibana-ssl.yml
+  when: es_enable_http_ssl or secure_settings
+  tags:
+    - config
+
+- name: flush handlers
+  meta: flush_handlers
+
+- name: Make sure kibana is started
+  service: name={{ instance_init_script | basename }} state=started enabled=yes
+  when: kibana_start_service | bool

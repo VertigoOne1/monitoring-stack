@@ -1,0 +1,27 @@
+---
+- name: Set the defaults here otherwise they can't be overriden in the same play if the role is called twice
+  set_fact:
+    es_repo_name: "{{ es_major_version }}"
+
+- name: Use the oss repo and package if requested
+  set_fact:
+    es_repo_name: "{{ 'oss-' + es_major_version }}"
+    kibana_package_name: "kibana-oss"
+  when:
+    - kibana_install_oss | bool
+
+- name: Discover "inverse" package name (1/2)
+  set_fact:
+    kibana_inverted_package_name: kibana
+    es_repo_name_inverted: "{{ es_major_version }}"
+    es_other_apt_url: "deb https://artifacts.elastic.co/packages/{{ es_major_version }}/apt stable main"
+  when:
+    - kibana_package_name == 'kibana-oss'
+
+- name: Discover "inverse" package name (2/2)
+  set_fact:
+    kibana_inverted_package_name: kibana-oss
+    es_repo_name_inverted: "{{ 'oss-' + es_major_version }}"
+    es_other_apt_url: "deb https://artifacts.elastic.co/packages/{{ 'oss-' + es_major_version }}/apt stable main"
+  when:
+    - kibana_package_name == 'kibana'

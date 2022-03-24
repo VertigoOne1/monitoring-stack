@@ -10,7 +10,7 @@ grafana_datasources:
     basicAuth: false
 grafana_plugins:
   - grafana-polystat-panel
-  - btplc-status-dot-panel
+  # - btplc-status-dot-panel -> not available, archived by owner
 grafana_dashboards_dir: dashboards
 grafana_use_provisioning: True
 provisioned_dashboards_allow_ui_updates: True
