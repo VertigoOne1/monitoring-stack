@@ -1,0 +1,16 @@
+---
+# - hosts: prometheus_servers
+#   roles:
+#   - prometheus-role
+
+# - hosts: grafana_servers
+#   roles:
+#   - grafana-role
+
+- hosts: elasticsearch_servers
+  roles:
+  - role: elasticsearch-role
+
+- hosts: kibana_servers
+  roles:
+  - role: kibana-role

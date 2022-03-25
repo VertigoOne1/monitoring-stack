@@ -343,6 +343,13 @@ fileConfigs:
       #   @id ignore_kube_system_logs
       # </match>
 
+      <filter **>
+        @type record_transformer
+        <record>
+          timestamp ${time}
+        </record>
+      </filter>
+
       <filter kubernetes.**>
         @type kubernetes_metadata
         @id filter_kube_metadata
